@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="ProAgroModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Estados">
+    <Key>
+      <PropertyRef Name="idEstado" />
+    </Key>
+    <Property Name="idEstado" Type="Int32" Nullable="false" />
+    <Property Name="Nombre" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+    <Property Name="Clave" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Georreferencias" Relationship="Self.FK__Georrefer__idEst__5070F446" FromRole="Estados" ToRole="Georreferencias" />
+    <NavigationProperty Name="Permisos" Relationship="Self.FK__Permisos__idEsta__5441852A" FromRole="Estados" ToRole="Permisos" />
+  </EntityType>
+  <EntityType Name="Georreferencias">
+    <Key>
+      <PropertyRef Name="idGeorreferencia" />
+    </Key>
+    <Property Name="idGeorreferencia" Type="Int32" Nullable="false" />
+    <Property Name="idEstado" Type="Int32" />
+    <Property Name="Latitud" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+    <Property Name="Longitud" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Estados" Relationship="Self.FK__Georrefer__idEst__5070F446" FromRole="Georreferencias" ToRole="Estados" />
+  </EntityType>
+  <EntityType Name="Permisos">
+    <Key>
+      <PropertyRef Name="idPermiso" />
+    </Key>
+    <Property Name="idPermiso" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="idUsuario" Type="Int32" />
+    <Property Name="idEstado" Type="Int32" />
+    <NavigationProperty Name="Estados" Relationship="Self.FK__Permisos__idEsta__5441852A" FromRole="Permisos" ToRole="Estados" />
+    <NavigationProperty Name="Usuario" Relationship="Self.FK__Permisos__idUsua__534D60F1" FromRole="Permisos" ToRole="Usuario" />
+  </EntityType>
+  <EntityType Name="Usuario">
+    <Key>
+      <PropertyRef Name="idUsuario" />
+    </Key>
+    <Property Name="idUsuario" Type="Int32" Nullable="false" />
+    <Property Name="Contraseña" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+    <Property Name="Nombre" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+    <Property Name="Fecha_de_nacimiento" Type="DateTime" Precision="3" />
+    <Property Name="RFC" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Permisos" Relationship="Self.FK__Permisos__idUsua__534D60F1" FromRole="Usuario" ToRole="Permisos" />
+  </EntityType>
+  <Association Name="FK__Georrefer__idEst__5070F446">
+    <End Role="Estados" Type="Self.Estados" Multiplicity="0..1" />
+    <End Role="Georreferencias" Type="Self.Georreferencias" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Estados">
+        <PropertyRef Name="idEstado" />
+      </Principal>
+      <Dependent Role="Georreferencias">
+        <PropertyRef Name="idEstado" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Permisos__idEsta__5441852A">
+    <End Role="Estados" Type="Self.Estados" Multiplicity="0..1" />
+    <End Role="Permisos" Type="Self.Permisos" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Estados">
+        <PropertyRef Name="idEstado" />
+      </Principal>
+      <Dependent Role="Permisos">
+        <PropertyRef Name="idEstado" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Permisos__idUsua__534D60F1">
+    <End Role="Usuario" Type="Self.Usuario" Multiplicity="0..1" />
+    <End Role="Permisos" Type="Self.Permisos" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Usuario">
+        <PropertyRef Name="idUsuario" />
+      </Principal>
+      <Dependent Role="Permisos">
+        <PropertyRef Name="idUsuario" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="ProAgroEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Estados" EntityType="Self.Estados" />
+    <EntitySet Name="Georreferencias" EntityType="Self.Georreferencias" />
+    <EntitySet Name="Permisos" EntityType="Self.Permisos" />
+    <EntitySet Name="Usuario" EntityType="Self.Usuario" />
+    <AssociationSet Name="FK__Georrefer__idEst__5070F446" Association="Self.FK__Georrefer__idEst__5070F446">
+      <End Role="Estados" EntitySet="Estados" />
+      <End Role="Georreferencias" EntitySet="Georreferencias" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Permisos__idEsta__5441852A" Association="Self.FK__Permisos__idEsta__5441852A">
+      <End Role="Estados" EntitySet="Estados" />
+      <End Role="Permisos" EntitySet="Permisos" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Permisos__idUsua__534D60F1" Association="Self.FK__Permisos__idUsua__534D60F1">
+      <End Role="Usuario" EntitySet="Usuario" />
+      <End Role="Permisos" EntitySet="Permisos" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

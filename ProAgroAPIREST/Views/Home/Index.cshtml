@@ -1,0 +1,203 @@
+﻿<!--
+<div class="jumbotron">
+    <h1>ASP.NET</h1>
+    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS, and JavaScript.</p>
+    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <h2>Getting started</h2>
+        <p>ASP.NET Web API is a framework that makes it easy to build HTTP services that reach
+        a broad range of clients, including browsers and mobile devices. ASP.NET Web API
+        is an ideal platform for building RESTful applications on the .NET Framework.</p>
+        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301870">Learn more &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Get more libraries</h2>
+        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
+        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301871">Learn more &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Web Hosting</h2>
+        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
+        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301872">Learn more &raquo;</a></p>
+    </div>
+</div>
+ -->
+<script>
+    var meta = document.createElement('meta');
+    meta.setAttribute("http-equiv", "Content-Security-Policy");
+    meta.setAttribute("content", "upgrade-insecure-requests");
+    document.head.append(meta);
+
+    var smaps = document.createElement('script');
+    smaps.src = "http://maps.google.com/maps/api/js?key=AIzaSyBElcuRB59pJzMHXhd1nfBEcOgUdCcCMKY";
+    smaps.type = "text/javascript";
+
+    document.head.append(smaps);
+</script>
+<style>
+    .box-loading {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .logo {
+        width: 256px;
+        margin-top: 120px;
+    }
+
+    .mymap{
+        width: 100%;
+        height:400px;
+    }
+
+    .ultra-red {
+        color: #FF6978;
+    }
+</style>
+
+
+
+<div class="row row-no-gutters view-start">
+    <div class="col-12 col-md-6">
+        <div class="jumbotron">
+            <h1>ASP.NET</h1>
+            <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS, and JavaScript.</p>
+            <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+        </div>
+    </div>
+    <div class="col-12 col-md-6">
+        <form onsubmit="return false;" class="container-fluid">
+            <img src="https://proagroinsur.tech/panel/images/Proagro_Logo.png" class="logo">
+            <div class="input-group">
+                <label class="label label-default" for="idUsuario">ID Usuario</label>
+                <input id="idUsuario" type="number" class="form-control" placeholder="Id Usuario">
+            </div>
+            <div class="input-group">
+                <label class="label label-default" for="iPassword">Password</label>
+                <input id="iPassword" type="password" class="form-control" placeholder="Contraseña">
+            </div>
+            <div class="input-group">
+                <button type="submit" class="btn btn-primary btn-lg login">Login</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    var login = document.querySelector('.btn.login');
+    var viewstart = document.querySelector('.view-start');
+    var inner = viewstart.innerHTML;
+
+    login.addEventListener('click', function () {
+        inicioSesion();
+    });
+
+    function inicioSesion() {
+        var idUsuario = document.getElementById('idUsuario');
+        var iPassword = document.getElementById('iPassword');
+
+        if (idUsuario.value != "") {
+            if (iPassword.value != "") {
+                viewstart.innerHTML = `<div class="box-loading">
+                                            <img src="https://c.tenor.com/28DFFVtvNqYAAAAC/loading.gif" class="logo">
+                                            <img src="https://proagroinsur.tech/panel/images/Proagro_Logo.png" class="logo">
+                                        </div>`;
+
+                validar_usuario(idUsuario.value, iPassword.value);
+                
+            } else {
+                alert("Inserta tu Contraseña");
+            }
+        } else {
+            alert("Inserta tu id de Usuario");
+        }
+    }
+
+
+    /** API LOGIN  */
+    function validar_usuario(usuario, password) {
+        var login = {
+            idUsuario: usuario,
+            Contraseña: password
+        }
+        fetch('https://localhost:44368/api/Usuarios/', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(login)
+        }).then(res => res.json())
+            .then(res => {
+                // TRUE 
+                console.log(res);
+                // OBTENER UBICACIONES
+                validar_georreferencias(login.idUsuario);
+
+            }).catch(function (error) {
+                console.log('Request failed', error);
+                viewstart.innerHTML = `<div class="box-loading">
+                                            <img src="https://img.lovepik.com/element/40021/7866.png_860.png" class="logo">
+                                            <img src="https://proagroinsur.tech/panel/images/Proagro_Logo.png" class="logo">
+                                            <h1>Datos Incorrectos</h1>
+                                        </div>`;
+            });
+    }
+
+    /** API PERMISIONS  */
+    function validar_georreferencias(idUsuario) {
+        var viewstart = document.querySelector('.view-start');
+        // GET LOCATIONS AQUI DEVUELVE LAS UBICACIONES DEL CLIENTE
+        fetch('https://localhost:44368/api/Usuarios/' + idUsuario, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            }
+        }).then(res => res.json())
+            .then(res => {
+                console.log(res);
+
+                // PINTAR MAPA
+                var Nombre = res.Nombre;
+                var Georreferencias = res.Permisos[0].Estados.Georreferencias;
+                viewstart.innerHTML = `<h1>Bienvenido <b class='ultra-red'>${Nombre}</b></h1><div id="map" class="mymap"></div>`;
+
+                var map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 10,
+                    center: new google.maps.LatLng(Georreferencias[0].Latitud, Georreferencias[0].Longitud),
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                });
+
+                var infowindow = new google.maps.InfoWindow();
+
+                var marker, i;
+
+                for (i = 0; i < Georreferencias.length; i++) {
+                    marker = new google.maps.Marker({
+                        position: new google.maps.LatLng(Georreferencias[i].Latitud, Georreferencias[i].Longitud),
+                        map: map
+                    });
+
+                    google.maps.event.addListener(marker, 'click', (function (marker, i) {
+                        return function () {
+                            infowindow.setContent(locations[i][0]);
+                            infowindow.open(map, marker);
+                        }
+                    })(marker, i));
+                }
+            }).catch(function (error) {
+                console.log('Request failed', error);
+                viewstart.innerHTML = `<div class="box-loading">
+                                            <img src="https://img.lovepik.com/element/40021/7866.png_860.png" class="logo">
+                                            <img src="https://proagroinsur.tech/panel/images/Proagro_Logo.png" class="logo">
+                                            <h1>Datos Incorrectos</h1>
+                                        </div>`;
+            });
+    }
+</script>
